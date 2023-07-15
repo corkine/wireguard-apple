@@ -604,7 +604,30 @@ class TunnelContainer: NSObject {
     }
 
     var tunnelConfiguration: TunnelConfiguration? {
-        return tunnelProvider.tunnelConfiguration
+        guard let conf = tunnelProvider.tunnelConfiguration else { return nil }
+        //let newPeers = conf.peers.map { (peer: PeerConfiguration) in
+        //    var peer = peer
+        //    if let ep = peer.endpoint {
+        //        let str = ep.stringRepresentation
+        //        let pattern = #"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d+)"#
+        //        if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
+        //            let matches = regex.matches(in: str, options: [], range: NSRange(location: 0, length: str.utf16.count))
+        //            if let match = matches.first {
+        //                let portRange = match.range(at: 2)
+        //                if let range = Range(portRange, in: str), let port = Int(str[range]) {
+        //                    let newPort = Calendar.current.ordinality(of: .day, in: .year, for: Date())! + port
+        //                    let codeTo = (ep.host.debugDescription) + ":" + String(newPort)
+        //                    print("change port to \(codeTo)")
+        //                    peer.endpoint = Endpoint(from: codeTo)
+        //                }
+        //            }
+        //        }
+        //
+        //    }
+        //    return peer
+        //}
+        //let confNew = TunnelConfiguration(name: conf.name, interface: conf.interface, peers: newPeers)
+        return conf
     }
 
     var onDemandOption: ActivateOnDemandOption {

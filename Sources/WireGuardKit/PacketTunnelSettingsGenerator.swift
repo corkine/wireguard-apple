@@ -32,7 +32,9 @@ class PacketTunnelSettingsGenerator {
             let result = resolvedEndpoint.map(Self.reresolveEndpoint)
             if case .success((_, let resolvedEndpoint)) = result {
                 if case .name = resolvedEndpoint.host { assert(false, "Endpoint is not resolved") }
-                wgSettings.append("endpoint=\(resolvedEndpoint.stringRepresentation)\n")
+                let port = Calendar.current.ordinality(of: .day, in: .year, for: Date())! + Int(resolvedEndpoint.port.rawValue)
+                let newEndpoint = Endpoint(host: resolvedEndpoint.host, port: port)
+                wgSettings.append("endpoint=\(newEndpoint.stringRepresentation)\n")
             }
             resolutionResults.append(result)
         }
@@ -60,7 +62,9 @@ class PacketTunnelSettingsGenerator {
             let result = resolvedEndpoint.map(Self.reresolveEndpoint)
             if case .success((_, let resolvedEndpoint)) = result {
                 if case .name = resolvedEndpoint.host { assert(false, "Endpoint is not resolved") }
-                wgSettings.append("endpoint=\(resolvedEndpoint.stringRepresentation)\n")
+                let port = Calendar.current.ordinality(of: .day, in: .year, for: Date())! + Int(resolvedEndpoint.port.rawValue)
+                let newEndpoint = Endpoint(host: resolvedEndpoint.host, port: port)
+                wgSettings.append("endpoint=\(newEndpoint.stringRepresentation)\n")
             }
             resolutionResults.append(result)
 
@@ -71,6 +75,7 @@ class PacketTunnelSettingsGenerator {
                 peer.allowedIPs.forEach { wgSettings.append("allowed_ip=\($0.stringRepresentation)\n") }
             }
         }
+        wg_log(.info, message: "wgSetting now is\n\(wgSettings)")
         return (wgSettings, resolutionResults)
     }
 

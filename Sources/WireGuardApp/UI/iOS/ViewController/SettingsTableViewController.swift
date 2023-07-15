@@ -52,7 +52,12 @@ class SettingsTableViewController: UITableViewController {
         tableView.register(KeyValueCell.self)
         tableView.register(ButtonCell.self)
 
-        tableView.tableFooterView = UIImageView(image: UIImage(named: "wireguard.pdf"))
+        // tableView.tableFooterView = UIImageView(image: UIImage(named: "wireguard.pdf"))
+        let textView = UITextView()
+        textView.text = "由 Wireguard 提供支持。动态根据`今天是今年的第几天 + 原有端口`构成新节点对端端口。"
+        textView.textColor = UIColor.placeholderText
+        textView.font = UIFont.systemFont(ofSize: 13)
+        tableView.tableFooterView = textView
     }
 
     override func viewDidLayoutSubviews() {
@@ -74,8 +79,8 @@ class SettingsTableViewController: UITableViewController {
 
         let needsReload = height != logo.frame.height
 
-        logo.frame = CGRect(x: (view.bounds.size.width - width) / 2, y: fullHeight - height, width: width, height: height)
-
+        logo.frame = //CGRect(x: (view.bounds.size.width - width) / 2, y: fullHeight - height, width: width, height: height)
+        CGRect(x: 10, y: fullHeight - 40, width: tableView.bounds.width - 10, height: height)
         if needsReload {
             tableView.tableFooterView = logo
         }

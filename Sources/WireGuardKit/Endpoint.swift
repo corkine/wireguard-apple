@@ -12,6 +12,10 @@ public struct Endpoint {
         self.host = host
         self.port = port
     }
+    public init(host: NWEndpoint.Host, port: Int) {
+        self.host = host
+        self.port = NWEndpoint.Port(integerLiteral: UInt16(port))
+    }
 }
 
 extension Endpoint: Equatable {
