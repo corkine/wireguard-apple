@@ -1,4 +1,8 @@
-# [WireGuard](https://www.wireguard.com/) for iOS and macOS
+# [WireGuard](https://www.wireguard.com/) for iOS and macOS（CyberBuild）
+
+> CyberBuild Edition
+> 
+> 特色：建立连接时，对端端口号 + 今天是今年的第几天构成实际下发给 Wireguard 的端口号。
 
 This project contains an application for iOS and for macOS, as well as many components shared between the two of them. You may toggle between the two platforms by selecting the target from within Xcode.
 
