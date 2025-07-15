@@ -1,11 +1,11 @@
-name: List Project Schemes
+name: Build Unsigned macOS App
 
 on:
   workflow_dispatch: # Allows you to run this workflow manually
 
 jobs:
-  list_schemes:
-    runs-on: macos-14 # Use the same runner for consistency
+  build:
+    runs-on: macos-14
 
     steps:
       # 1. Check out the repository's code
@@ -18,6 +18,28 @@ jobs:
         with:
           xcode-version: '15.4'
 
-      # 3. The only important step: List all schemes in the project
-      - name: List Available Schemes
-        run: xcodebuild -list -project WireGuard.xcodeproj
+      # 3. Install dependencies
+      - name: Install Dependencies
+        run: |
+          brew install swiftlint
+          brew install go
+
+      # 4. Build the .app with the correct scheme name
+      - name: Build unsigned .app
+        run: |
+          xcodebuild build \
+            -scheme "WireGuardmacOS" \
+            -project "WireGuard.xcodeproj" \
+            -sdk macosx \
+            -configuration Release \
+            -derivedDataPath ./build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      # 5. Upload the final .app file as a downloadable artifact
+      - name: Upload .app Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WireGuard-macOS-unsigned
+          path: build/Build/Products/Release/WireGuard.app
