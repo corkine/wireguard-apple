@@ -1,48 +1,23 @@
-name: Build Unsigned macOS App
+name: List Project Schemes
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch: # Allows you to run this workflow manually
 
 jobs:
-  build:
-    runs-on: macos-14
+  list_schemes:
+    runs-on: macos-14 # Use the same runner for consistency
 
     steps:
-      # 1. 检出代码
+      # 1. Check out the repository's code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. 选择稳定的 Xcode 15.4
+      # 2. Select the stable Xcode 15.4 environment
       - name: Select Xcode 15.4
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '15.4'
 
-      # 3. 安装依赖
-      - name: Install Dependencies
-        run: |
-          brew install swiftlint
-          brew install go
-
-      # 4. 构建生成 .app 文件
-      # 注意：我们使用 'build' 而不是 'archive'
-      # clean=NO and CODE_SIGNING_ALLOWED=NO 是为了生成一个可用于本地签名的纯净 .app
-      - name: Build unsigned .app
-        run: |
-          xcodebuild build \
-            -scheme "WireGuard (macOS)" \
-            -project "WireGuard.xcodeproj" \
-            -sdk macosx \
-            -configuration Release \
-            -derivedDataPath ./build \
-            clean=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
-
-      # 5. 上传构建好的 .app 文件作为产物
-      - name: Upload .app Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: WireGuard-macOS-unsigned
-          path: build/Build/Products/Release/WireGuard.app
+      # 3. The only important step: List all schemes in the project
+      - name: List Available Schemes
+        run: xcodebuild -list -project WireGuard.xcodeproj
