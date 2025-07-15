@@ -24,7 +24,11 @@ jobs:
           brew install swiftlint
           brew install go
 
-      # 4. Build the .app with the correct scheme name
+      # 4. (NEW) Create the required developer config file from the template
+      - name: Create Developer Config File
+        run: cp Sources/WireGuardApp/Config/Developer.xcconfig.template Sources/WireGuardApp/Config/Developer.xcconfig
+
+      # 5. Build the .app with the correct scheme name
       - name: Build unsigned .app
         run: |
           xcodebuild build \
@@ -37,7 +41,7 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
 
-      # 5. Upload the final .app file as a downloadable artifact
+      # 6. Upload the final .app file as a downloadable artifact
       - name: Upload .app Artifact
         uses: actions/upload-artifact@v4
         with:
