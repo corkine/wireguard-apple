@@ -30,7 +30,7 @@ jobs:
       - name: Build unsigned .app
         run: |
           xcodebuild build \
-            -scheme "WireGuard" \
+            -scheme "WireGuard (macOS)" \
             -project "WireGuard.xcodeproj" \
             -sdk macosx \
             -configuration Release \
