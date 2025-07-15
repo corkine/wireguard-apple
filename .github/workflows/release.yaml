@@ -46,4 +46,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WireGuard-macOS-unsigned
-          path: build/Build/Products/Release/WireGuard.app
+          path: build/Build/Products/Release/CyberGuard.app
