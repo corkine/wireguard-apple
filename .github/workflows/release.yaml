@@ -1,10 +1,10 @@
-name: Build and Package Unsigned macOS App
+name: Build Ad-Hoc Signed macOS App
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
 
 jobs:
-  build-and-package:
+  build:
     runs-on: macos-14
 
     steps:
@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. 选择稳定的 Xcode 15.4
+      # 2. 选择稳定的 Xcode
       - name: Select Xcode 15.4
         uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -28,8 +28,8 @@ jobs:
       - name: Create Developer Config File
         run: cp Sources/WireGuardApp/Config/Developer.xcconfig.template Sources/WireGuardApp/Config/Developer.xcconfig
 
-      # 5. 构建应用
-      - name: Build unsigned .app
+      # 5. (关键修复) 使用 Ad-Hoc 签名进行构建
+      - name: Build Ad-Hoc signed .app
         run: |
           xcodebuild build \
             -scheme "WireGuardmacOS" \
@@ -37,16 +37,12 @@ jobs:
             -sdk macosx \
             -configuration Release \
             -derivedDataPath ./build \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGN_IDENTITY="-"
 
-      # 6. (关键修复) 手动将构建好的 .app 文件夹压缩
+      # 6. 手动将构建好的 .app 文件夹压缩
       - name: Zip the .app bundle
         run: |
-          # 进入到包含 .app 的目录
           cd build/Build/Products/Release/
-          # 使用 zip 命令递归地打包 CyberGuard.app 文件夹
           zip -r ../../../../CyberGuard-macOS.zip CyberGuard.app
           cd ../../../../
 
@@ -54,5 +50,5 @@ jobs:
       - name: Upload Zipped .app Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CyberGuard-macOS-unsigned
+          name: CyberGuard-macOS-ad-hoc-signed
           path: CyberGuard-macOS.zip
