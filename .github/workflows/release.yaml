@@ -1,34 +1,34 @@
-name: Build Unsigned macOS App
+name: Build and Package Unsigned macOS App
 
 on:
-  workflow_dispatch: # Allows you to run this workflow manually
+  workflow_dispatch: # 允许手动触发
 
 jobs:
-  build:
+  build-and-package:
     runs-on: macos-14
 
     steps:
-      # 1. Check out the repository's code
+      # 1. 检出代码
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Select the stable Xcode 15.4 environment
+      # 2. 选择稳定的 Xcode 15.4
       - name: Select Xcode 15.4
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '15.4'
 
-      # 3. Install dependencies
+      # 3. 安装依赖
       - name: Install Dependencies
         run: |
           brew install swiftlint
           brew install go
 
-      # 4. (NEW) Create the required developer config file from the template
+      # 4. 创建所需的开发者配置文件
       - name: Create Developer Config File
         run: cp Sources/WireGuardApp/Config/Developer.xcconfig.template Sources/WireGuardApp/Config/Developer.xcconfig
 
-      # 5. Build the .app with the correct scheme name
+      # 5. 构建应用
       - name: Build unsigned .app
         run: |
           xcodebuild build \
@@ -41,9 +41,18 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
 
-      # 6. Upload the final .app file as a downloadable artifact
-      - name: Upload .app Artifact
+      # 6. (关键修复) 手动将构建好的 .app 文件夹压缩
+      - name: Zip the .app bundle
+        run: |
+          # 进入到包含 .app 的目录
+          cd build/Build/Products/Release/
+          # 使用 zip 命令递归地打包 CyberGuard.app 文件夹
+          zip -r ../../../../CyberGuard-macOS.zip CyberGuard.app
+          cd ../../../../
+
+      # 7. 上传我们手动创建的 .zip 文件
+      - name: Upload Zipped .app Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: WireGuard-macOS-unsigned
-          path: build/Build/Products/Release/CyberGuard.app
+          name: CyberGuard-macOS-unsigned
+          path: CyberGuard-macOS.zip
