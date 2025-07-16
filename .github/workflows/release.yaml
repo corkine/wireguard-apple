@@ -37,8 +37,10 @@ jobs:
             -sdk macosx \
             -configuration Release \
             -derivedDataPath ./build \
-            DEVELOPMENT_TEAM="V3ADQ9GV27"
-            CODE_SIGN_IDENTITY="-"
+            DEVELOPMENT_TEAM="V3ADQ9GV27" \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
 
       # 6. 手动将构建好的 .app 文件夹压缩
       - name: Zip the .app bundle
