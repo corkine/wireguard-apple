@@ -49,3 +49,5 @@ Sources/WireGuardApp/Config/Developer.xcconfig
 
 # Vim
 .*.sw*
+CyberGuard.app
+sign.sh
